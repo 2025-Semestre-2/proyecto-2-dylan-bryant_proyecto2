@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      context: ./Api/my-node-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./Api/my-node-app:/usr/src/app
+    environment:
+      NODE_ENV: development
+    networks:
+      - my-app-network
+
+
+  frontend:
+    build:
+      context: ./WebSite/Frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+    - ./WebSite/Frontend:/app
+    - /app/node_modules
+    networks:
+      - my-app-network
+
+    command: npm run dev -- --host 0.0.0.0
+    
+    environment:
+    - NODE_ENV=development
+
+networks:
+  my-app-network:
+    driver: bridge
