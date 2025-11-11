@@ -11,7 +11,8 @@ class DBSales{
     this._config = {
       user: "sa",
       password: "YourStrong!Passw0rd",
-      server: "sqlserver", // nombre del servicio en docker-compose
+      server: "86.48.22.228",
+      port: 1433, 
       database: "AdventureWorks2022",
       options: {
         encrypt: false,

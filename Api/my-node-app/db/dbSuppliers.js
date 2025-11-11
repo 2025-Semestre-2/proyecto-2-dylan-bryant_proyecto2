@@ -11,7 +11,8 @@ class DBSuppliers{
     this._config = {
       user: "sa",
       password: "YourStrong!Passw0rd",
-      server: "sqlserver", // nombre del servicio en Docker Compose
+      server: "86.48.22.228",
+      port: 1433, 
       database: "WideWorldImporters",
       options: {
         encrypt: false,
