@@ -7,8 +7,8 @@ const db = DB.getInstance();
 
 salesRouter.get("/getAllInvoices", async (req, res) =>{
   try{
-    const result = await db.SP_AllInvoices();
-    console.log("Sucursal del usuario: ", req.session.sucursal);
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_AllInvoices(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_AllItems:", err);
@@ -19,6 +19,7 @@ salesRouter.get("/getAllInvoices", async (req, res) =>{
 salesRouter.get("/searchInvoices", async (req, res) =>{
   try{
     const { customer = '', deliveryMethod = '', minDate = '', maxDate = '', minAmount = '', maxAmount = '' } = req.query;
+    const sucursal = req.query.sucursal;
     console.log("Cliente: ", customer);
     console.log("Método de entrega: ", deliveryMethod);
     console.log("Fecha mínima: ", minDate);
@@ -30,7 +31,7 @@ salesRouter.get("/searchInvoices", async (req, res) =>{
     const maxQ = maxAmount !== '' ? parseInt(maxAmount, 10) : null;
     console.log("Cantidad Mínima: ", minQ);
     console.log("Cantidad máxima:", maxQ);
-    const result = await db.SearchInvoices(customer, deliveryMethod, minDate, maxDate,minQ, maxQ);
+    const result = await db.SearchInvoices(customer, deliveryMethod, minDate, maxDate,minQ, maxQ, sucursal);
     //console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -47,9 +48,10 @@ salesRouter.get("/searchInvoices", async (req, res) =>{
 //Obtener el encabezado específico de la factura
 salesRouter.get("/getSpecificHeader", async (req, res) =>{
   try{
+    const sucursal = req.query.sucursal;
     const { ID = '' } = req.query;
     const IDint = ID !== '' ? parseInt(ID, 10) : null;
-    const result = await db.SP_InvoiceHeader(IDint);
+    const result = await db.SP_InvoiceHeader(IDint, sucursal);
     console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -66,9 +68,10 @@ salesRouter.get("/getSpecificHeader", async (req, res) =>{
 
 salesRouter.get("/getInvoiceLines", async (req, res) =>{
   try{
+    const sucursal = req.query.sucursal;
     const { ID = '' } = req.query;
     const IDint = ID !== '' ? parseInt(ID, 10) : null;
-    const result = await db.SP_InvoiceLines(IDint);
+    const result = await db.SP_InvoiceLines(IDint, sucursal);
     console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -85,7 +88,8 @@ salesRouter.get("/getInvoiceLines", async (req, res) =>{
 
 salesRouter.get("/getMinAndMaxDate", async (req, res) =>{
   try{
-    const result = await db.SP_MinAndMaxDateInvoices();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_MinAndMaxDateInvoices(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_MinAndMaxDateInvoices:", err);
@@ -95,7 +99,8 @@ salesRouter.get("/getMinAndMaxDate", async (req, res) =>{
 
 salesRouter.get("/getMinAndMaxAmount", async (req, res) =>{
   try{
-    const result = await db.SP_MinAndMaxTotalInvoices();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_MinAndMaxTotalInvoices(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_MinAndMaxDateInvoices:", err);

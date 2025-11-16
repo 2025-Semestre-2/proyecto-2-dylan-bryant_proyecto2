@@ -4,7 +4,10 @@ import 'leaflet/dist/leaflet.css';
 </script>
 
 <template>
-  <Navbar /> 
-  <router-view></router-view>
+    <div >
+        <main class="">
+            <RouterView />
+        </main>
+    </div>
 </template>
 

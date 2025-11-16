@@ -8,24 +8,34 @@ class DBSales{
       throw new Error("No se puede instanciar más de una vez");
     }
 
-    this._config = {
-      user: "sa",
-      password: "YourStrong!Passw0rd2",
-      server: "86.48.22.228",
-      port: 1434, 
-      database: "Limon",
-      options: {
-        encrypt: false,
-        trustServerCertificate: true
-      }
-    };
+    // Lista con todas las configuraciones
+     this.listaConfiguraciones = [
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd2",
+        server: "86.48.22.228",
+        port: 1434,
+        database: "Limon",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      },
 
-    try{
-      this._conection =  sql.connect(this._config);
-      console.log("Conectado a sql server desde dbSales.js a las " + + new Date().toLocaleTimeString());
-    }catch(err){
-      console.error('Error al intentarse conectar desde db.js:', err);
-    }
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd3",
+        server: "86.48.22.228",
+        port: 1435,
+        database: "SanJose",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      }
+    ]
+
+    DBSales.#_instance = this;
   }
   
   
@@ -38,12 +48,28 @@ class DBSales{
   } 
 
   //Aquí ya ejecuto todos los procedimientos
+  //Se verifica que la sucursal que envía exista y retorna la conexión
+  verificarSucursal(pSucursal){
+    for(let i = 0; i < this.listaConfiguraciones.length; i++){
+      if(this.listaConfiguraciones[i].database === pSucursal){
+        return this.listaConfiguraciones[i]
+      }
+    }
+    throw new Error(`La sucursal "${pSucursal}" no existe`);
+  }
 
   //Obtener todas las facturas para la tabla principal
-  async SP_AllInvoices() {
+  async SP_AllInvoices(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_AllInvoices`;
+      const configuracion = this.verificarSucursal(sucursal);
+      
+      console.log("Desde la sucursal: " + sucursal)
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+      
+      const result = await request.execute("SP_AllInvoices");
       return result.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_AllInvoices:", err);
       throw err;
@@ -51,10 +77,11 @@ class DBSales{
   }
 
   //Obtener el encabezado de la factura para la vista detallada
-  async SP_InvoiceHeader(ID) {
+  async SP_InvoiceHeader(ID, sucursal) {
       try{
         //Abrir el request
-        const pool = await sql.connect(this._config);
+        const configuracion = this.verificarSucursal(sucursal);
+        const pool = await sql.connect(configuracion);
         const request = pool.request();
   
         //Poner los parámetros de entrada
@@ -77,10 +104,11 @@ class DBSales{
     }
 
   //Obtener las líneas de una factura para la vista detallada
-  async SP_InvoiceLines(ID) {
+  async SP_InvoiceLines(ID, sucursal) {
       try{
         //Abrir el request
-        const pool = await sql.connect(this._config);
+        const configuracion = this.verificarSucursal(sucursal);
+        const pool = await sql.connect(sucursal);
         const request = pool.request();
   
         //Poner los parámetros de entrada
@@ -103,10 +131,11 @@ class DBSales{
     }
 
   //Búsqueda entre todas las facturas para la tabla principal
-  async SearchInvoices(customer, deliveryMethod, minDate, maxDate, minAmount, maxAmount){
+  async SearchInvoices(customer, deliveryMethod, minDate, maxDate, minAmount, maxAmount, sucursal){
     try{
       //Abrir el request
-      const pool = await sql.connect(this._config);
+      const configuracion = this.verificarSucursal(sucursal);
+      const pool = await sql.connect(sucursal);
       const request = pool.request();
   
       //Poner los parámetros de entrada
@@ -134,20 +163,34 @@ class DBSales{
   }
 
 
-  async SP_MinAndMaxTotalInvoices() {
+  async SP_MinAndMaxTotalInvoices(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_MinAndMaxTotalInvoices`;
+      const configuracion = this.verificarSucursal(sucursal);
+      
+      console.log("Desde la sucursal: " + sucursal)
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+      
+      const result = await request.execute("SP_MinAndMaxTotalInvoices");
       return result.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_MinAndMaxTotalInvoices:", err);
       throw err;
     }
   }
 
-  async SP_MinAndMaxDateInvoices() {
+  async SP_MinAndMaxDateInvoices(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_MinAndMaxDateInvoices`;
+      const configuracion = this.verificarSucursal(sucursal);
+      
+      console.log("Desde la sucursal: " + sucursal)
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+      
+      const result = await request.execute("SP_MinAndMaxDateInvoices");
       return result.recordset;
+ 
     } catch (err) {
       console.error("Error al ejecutar SP_MinAndMaxDateInvoices:", err);
       throw err;

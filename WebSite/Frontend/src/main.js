@@ -1,8 +1,14 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import './style.css'
 import App from './App.vue'
 import router from './router'
 
-createApp(App)
-  .use(router)
-  .mount('#app')
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate) // Registrar el plugin
+
+const app = createApp(App)
+app.use(router)
+app.use(pinia)
+app.mount('#app')

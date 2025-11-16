@@ -2,7 +2,7 @@
     <div class="navbar bg-sky-300 shadow-sm">
         <div class="flex-1">
             <a class="btn btn-ghost text-xl">Wide World Importers</a>
-            <router-link to="/" class="btn btn-ghost text-xl">Clientes</router-link>
+            <router-link to="/clientes" class="btn btn-ghost text-xl">Clientes</router-link>
             <router-link to="/proveedores" class="btn btn-ghost text-xl">Proveedores</router-link>
             <router-link to="/inventario" class="btn btn-ghost text-xl">Inventario</router-link>
             <router-link to="/ventas" class="btn btn-ghost text-xl">Ventas</router-link>

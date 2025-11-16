@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import { usuarioStore } from '../stores/usuario.js'
 export default {
   data() {
     return {
@@ -186,6 +187,8 @@ export default {
 
   },
   mounted() {
+    const store = usuarioStore();
+    console.log("Sucursal: " + store.sucursal)
     this.obtenerTodosLosClientes();
     this.obtenerLasCategorias();
     this.obtenerTodosLosTiposDeEntrega();
