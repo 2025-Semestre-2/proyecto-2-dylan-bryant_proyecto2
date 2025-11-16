@@ -8,25 +8,39 @@ class DBSuppliers{
       throw new Error("No se puede instanciar más de una vez");
     }
 
-    this._config = {
-      user: "sa",
-      password: "YourStrong!Passw0rd",
-      server: "86.48.22.228",
-      port: 1433, 
-      database: "WideWorldImporters",
-      options: {
-        encrypt: false,
-        trustServerCertificate: true,
+  
+    // Lista con todas las configuraciones
+     this.listaConfiguraciones = [
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd2",
+        server: "86.48.22.228",
+        port: 1434,
+        database: "Limon",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
       },
-    };
+
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd3",
+        server: "86.48.22.228",
+        port: 1435,
+        database: "SanJose",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      }
+    ]
+
 
     DBSuppliers.#_instance = this;
-    try{
-      this._conection =  sql.connect(this._config);
-      console.log("Conectado a sql server desde db.js")
-    }catch(err){
-      console.error('Error al intentarse conectar desde db.js:', err);
-    }
+
+    
+   
   }
   
   
@@ -36,27 +50,48 @@ class DBSuppliers{
       DBSuppliers.#_instance = new DBSuppliers();
     }
     return DBSuppliers.#_instance;
-  } 
+  }
+  
+
+
+  //Se verifica que la sucursal que envía exista y retorna la conexión
+  verificarSucursal(pSucursal){
+    for(let i = 0; i < this.listaConfiguraciones.length; i++){
+      if(this.listaConfiguraciones[i].database === pSucursal){
+        return this.listaConfiguraciones[i]
+      }
+    }
+    throw new Error(`La sucursal "${pSucursal}" no existe`);
+  }
 
   //Aquí ya ejecuto todos los procedimientos
   //Retorna a todos los proveedores
-  async SP_AllSupliers(){
+  async SP_AllSupliers(sucursal){
      try {
-          const result = await sql.query`EXEC SP_AllSuppliers`;
-          return result.recordset;
-        } catch (err) {
-          console.error("Error al ejecutar SP_AllSuppliers:", err);
-          throw err;
-        }
+
+      const configuracion = this.verificarSucursal(sucursal)
+
+      console.log("Desde la sucursal: " + sucursal)
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+
+      const result = await request.execute("SP_AllSuppliers");
+      return result.recordset;
+
+      } catch (err) {
+        console.error("Error al ejecutar SP_AllSuppliers:", err);
+        throw err;
+      }
   }
 
   //Retorna a los proveedores que sus datos coincidan con las entradas
-  async SearchSuppliers(name, category, deliveryMethod){
+  async SearchSuppliers(name, category, deliveryMethod, sucursal){
     try{
       //Abrir el request
-      const pool = await sql.connect(this._config);
+      const configuracion = this.verificarSucursal(sucursal)
+      const pool = await sql.connect(configuracion);
       const request = pool.request();
-  
+
       //Poner los parámetros de entrada
       request.input("SupplierName", sql.NVarChar(100), name); //Nombre del parámetro, tipo y la variable asignada de esta función
       request.input("Category", sql.NVarChar(50), category);
@@ -79,10 +114,11 @@ class DBSuppliers{
   }
 
   //Retorna el proveedor que coincida en la entrada
-  async SP_SelectSpecificSupplierData(name){
+  async SP_SelectSpecificSupplierData(name, sucursal){
     try{
       //Abrir el request
-      const pool = await sql.connect(this._config);
+      const configuracion = this.verificarSucursal(sucursal)
+      const pool = await sql.connect(configuracion);
       const request = pool.request();
   
       //Poner los parámetros de entrada
@@ -99,15 +135,20 @@ class DBSuppliers{
       console.log("El resultado de la consulta es: ", numero);
       return {resultado: numero, filas: result.recordset};
     }catch (err) {  
-      console.error("Error al ejecutar SearchSuppliers:", err);
+      console.error("Error al ejecutar SP_SelectSpecificSupplierData:", err);
       throw err;
     }
   }
 
-    async SP_AllSuppliersCategories() {
+    async SP_AllSuppliersCategories(sucursal) {
       try {
-        const result = await sql.query`EXEC SP_AllSuppliersCategories`;
+
+        const configuracion = this.verificarSucursal(sucursal)
+        const pool = await sql.connect(configuracion);
+        const request = pool.request();
+        const result = await request.execute("SP_AllSuppliersCategories");
         return result.recordset;
+
       } catch (err) {
         console.error("Error al ejecutar SP_AllSuppliersCategories:", err);
         throw err;

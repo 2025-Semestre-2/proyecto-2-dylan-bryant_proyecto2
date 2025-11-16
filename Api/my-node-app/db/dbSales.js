@@ -10,10 +10,10 @@ class DBSales{
 
     this._config = {
       user: "sa",
-      password: "YourStrong!Passw0rd",
+      password: "YourStrong!Passw0rd2",
       server: "86.48.22.228",
-      port: 1433, 
-      database: "AdventureWorks2022",
+      port: 1434, 
+      database: "Limon",
       options: {
         encrypt: false,
         trustServerCertificate: true
@@ -22,7 +22,7 @@ class DBSales{
 
     try{
       this._conection =  sql.connect(this._config);
-      console.log("Conectado a sql server desde db.js")
+      console.log("Conectado a sql server desde dbSales.js a las " + + new Date().toLocaleTimeString());
     }catch(err){
       console.error('Error al intentarse conectar desde db.js:', err);
     }

@@ -3,9 +3,12 @@ const salesRouter = express.Router()
 const DB = require("../db/dbSales.js");
 const db = DB.getInstance();
 
+
+
 salesRouter.get("/getAllInvoices", async (req, res) =>{
   try{
     const result = await db.SP_AllInvoices();
+    console.log("Sucursal del usuario: ", req.session.sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_AllItems:", err);

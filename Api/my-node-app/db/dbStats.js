@@ -23,7 +23,7 @@ class DBStats{
     DBStats.#_instance = this;
     try{
       this._conection =  sql.connect(this._config);
-      console.log("Conectado a sql server desde db.js")
+      console.log("Conectado a SQL Server desde dbStats.js a las " + new Date().toLocaleTimeString());
     }catch(err){
       console.error('Error al intentarse conectar desde db.js:', err);
     }

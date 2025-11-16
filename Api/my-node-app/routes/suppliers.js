@@ -7,7 +7,8 @@ const db = DB.getInstance();
 //Retorna a todos los proveedores
 suppliersRouter.get("/getAllSuppliers", async (req, res) =>{
   try{
-    const result = await db.SP_AllSupliers();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_AllSupliers(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
      console.error("Error al ejecutar el procedimiento almacenado SP_AllItems:", err);
@@ -19,10 +20,11 @@ suppliersRouter.get("/getAllSuppliers", async (req, res) =>{
 suppliersRouter.get("/searchSuppliers", async (req, res) =>{
   try{
     const { name = '', category = '', deliveryMethod = '' } = req.query;
+    const sucursal = req.query.sucursal;
     console.log("Nombre: ", name);
     console.log("Categoría: ", category);
     console.log("DeliveryMethod: ", deliveryMethod);
-    const result = await db.SearchSuppliers(name, category, deliveryMethod);
+    const result = await db.SearchSuppliers(name, category, deliveryMethod, sucursal);
     //console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -40,8 +42,8 @@ suppliersRouter.get("/searchSuppliers", async (req, res) =>{
 suppliersRouter.get("/getSpecificSupplier", async (req, res) =>{
   try{
     const { name = '' } = req.query;
-
-    const result = await db.SP_SelectSpecificSupplierData(name);
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_SelectSpecificSupplierData(name, sucursal);
     console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -58,7 +60,8 @@ suppliersRouter.get("/getSpecificSupplier", async (req, res) =>{
 
 suppliersRouter.get("/getAllCategories", async (req, res) =>{
   try{
-    const result = await db.SP_AllSuppliersCategories();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_AllSuppliersCategories(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_AllSuppliersCategories:", err);
