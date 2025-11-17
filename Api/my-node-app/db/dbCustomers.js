@@ -8,27 +8,44 @@ class DBCustomers {
       throw new Error("No se puede instanciar más de una vez");
     }
 
-    this._config = {
+    this.listaConfiguraciones = [
+      {
       user: "sa",
       password: "YourStrong!Passw0rd",
       server: "86.48.22.228",
       port: 1433, 
-      database: "WideWorldImporters",
+      database: "Corporativo",
       options: {
         encrypt: false,
         trustServerCertificate: true,
       },
-    };
+      },
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd2",
+        server: "86.48.22.228",
+        port: 1434,
+        database: "Limon",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      },
+
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd3",
+        server: "86.48.22.228",
+        port: 1435,
+        database: "SanJose",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      }
+    ]
 
     DBCustomers.#_instance = this;
-    try{
-      this._conection =  sql.connect(this._config);
-      console.log("Conectado a sql server desde dbCustomers.js a las " + new Date().toLocaleTimeString())
-    }catch(err){
-      console.error('Error al intentarse conectar desde db.js:', err);
-    }
-
-
   }
 
   static getInstance() {
@@ -38,23 +55,47 @@ class DBCustomers {
     return DBCustomers.#_instance;
   }
 
+  //Aquí ya ejecuto todos los procedimientos
+  //Se verifica que la sucursal que envía exista y retorna la conexión
+  verificarSucursal(pSucursal){
+    for(let i = 0; i < this.listaConfiguraciones.length; i++){
+      if(this.listaConfiguraciones[i].database === pSucursal){
+        return this.listaConfiguraciones[i]
+      }
+    }
+    throw new Error(`La sucursal "${pSucursal}" no existe`);
+  }
 
-  async SP_AllCustomers() {
+  //Tengo que combinar los datos de los id de la base de esta sucursal y los que contienen el resto de los datos en el corporativo
+  async SP_AllCustomers(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_AllCustomers`;
-      return result.recordset;
+
+      const configuracionCorporativo = this.verificarSucursal(sucursal);
+      const poolCorp = new sql.ConnectionPool(configuracionCorporativo);
+      await poolCorp.connect();
+      const resultadosCorporativo = await poolCorp.request().execute("SP_AllCustomers");
+      await poolCorp.close();
+
+      return resultadosCorporativo.recordset;
+
+
     } catch (err) {
       console.error("Error al ejecutar ST_AllCustomers:", err);
       throw err;
     }
   }
 
+
+
   //Retorna todos los datos de un cliente específico
-  async SP_SelectSpecificCustomerData(name) {
+  async SP_SelectSpecificCustomerData(name, sucursal) {
     try{
-      //Abrir el request
-      const pool = await sql.connect(this._config);
-      const request = pool.request();
+      //Abrir el request con la configuración
+     const configuracionCorporativo = this.verificarSucursal(sucursal);
+      const poolCorporativo = new sql.ConnectionPool(configuracionCorporativo);
+      await poolCorporativo.connect();
+      const request = poolCorporativo.request();
+
 
       //Poner los parámetros de entrada
       request.input("CustomerName", sql.NVarChar(100), name); //Nombre del parámetro, tipo y la variable asignada de esta función
@@ -64,23 +105,25 @@ class DBCustomers {
 
       //Ejecutar el procedimiento
       const result = await request.execute("SP_SelectSpecificCustomerData");
-
+      await poolCorporativo.close();
       //Obtener el número que me indica si se hizo bien o con error
       const numero = result.output.Success;
       console.log("El resultado de la consulta es: ", numero);
       return {resultado: numero, filas: result.recordset};
     }catch (err) {  
-      console.error("Error al ejecutar ST_AllCustomers:", err);
+      console.error("Error al ejecutar SP_SelectSpecificCustomerData:", err);
       throw err;
     }
   }
 
   //Retorna los clientes que coincidan
-  async SearchCustomers(name, category, deliveryMethod){
+  async SearchCustomers(name, category, deliveryMethod, sucursal){
      try{
-      //Abrir el request
-      const pool = await sql.connect(this._config);
-      const request = pool.request();
+      //Hacer la búsqueda
+      const configuracionCorporativo = this.verificarSucursal(sucursal);
+      const poolCorporativo = new sql.ConnectionPool(configuracionCorporativo);
+      await poolCorporativo.connect();
+      const request = poolCorporativo.request();
 
       //Poner los parámetros de entrada
       request.input("CustomerName", sql.NVarChar(100), name); //Nombre del parámetro, tipo y la variable asignada de esta función
@@ -92,10 +135,13 @@ class DBCustomers {
 
       //Ejecutar el procedimiento
       const result = await request.execute("SearchCustomers");
-
+      await poolCorporativo.close();
       //Obtener el número que me indica si se hizo bien o con error
       const numero = result.output.Success;
       console.log("El resultado de la consulta es: ", numero);
+
+      
+
       return {resultado: numero, filas: result.recordset};
     }catch (err) {  
       console.error("Error al ejecutar ST_AllCustomers:", err);
@@ -107,8 +153,14 @@ class DBCustomers {
   //Retorna todas las posibles categorías de los clientes
     async SP_AllCustomerCategories() {
     try {
-      const result = await sql.query`EXEC SP_AllCustomerCategories`;
-      return result.recordset;
+      const configuracionCorporativo = this.verificarSucursal("Corporativo");
+      const poolCorp = new sql.ConnectionPool(configuracionCorporativo);
+      await poolCorp.connect();
+      const resultadosCorporativo = await poolCorp.request().execute("SP_AllCustomerCategories");
+      await poolCorp.close();
+
+      return resultadosCorporativo.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_AllCustomerCategories:", err);
       throw err;
@@ -118,8 +170,15 @@ class DBCustomers {
   //Retorna todos los posibles métodos de entrega 
   async SP_All_DeliveryMethods(){
     try {
-      const result = await sql.query`EXEC SP_All_DeliveryMethods`;
-      return result.recordset;
+
+      const configuracionCorporativo = this.verificarSucursal("Corporativo");
+      const poolCorp = new sql.ConnectionPool(configuracionCorporativo);
+      await poolCorp.connect();
+      const resultadosCorporativo = await poolCorp.request().execute("SP_All_DeliveryMethods");
+      await poolCorp.close();
+
+      return resultadosCorporativo.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_All_DeliveryMethods:", err);
       throw err;

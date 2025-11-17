@@ -39,12 +39,13 @@
 import { nextTick } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
+import { usuarioStore } from '../stores/usuario.js'
 export default {
   data() {
     return {
       proveedor: null,
-      map: null
+      map: null,
+      sucursal: ''
     }
   },
 
@@ -53,7 +54,7 @@ export default {
       if (!nombre) return;
 
       try {
-        const url = `http://localhost:3000/suppliers/getSpecificSupplier?name=${encodeURIComponent(nombre)}`;
+        const url = `http://localhost:3000/suppliers/getSpecificSupplier?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Error en la respuesta del servidor');
         const result = await res.json();
@@ -91,6 +92,9 @@ export default {
   },
 
   mounted() {
+    const store = usuarioStore();
+    console.log("Sucursal: " + store.sucursal)
+    this.sucursal = store.sucursal;
     const nombreDelProveedor = localStorage.getItem('proveedorSeleccionado') || '';
     this.buscarProveedorEspecifico(nombreDelProveedor);
   }

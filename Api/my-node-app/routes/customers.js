@@ -12,7 +12,8 @@ customersRouter.get("/", (req, res) => {
 
 customersRouter.get("/getAllCustomers", async (req, res) =>{
   try{
-    const result = await db.SP_AllCustomers();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_AllCustomers(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado ST_AllCustomers:", err);
@@ -22,11 +23,12 @@ customersRouter.get("/getAllCustomers", async (req, res) =>{
 
 customersRouter.get("/searchCustomers", async (req, res) =>{
   try{
+    const sucursal = req.query.sucursal;
     const { name = '', category = '', deliveryMethod = '' } = req.query;
     console.log("Nombre: ", name);
     console.log("Categoría: ", category);
     console.log("DeliveryMethod: ", deliveryMethod);
-    const result = await db.SearchCustomers(name, category, deliveryMethod);
+    const result = await db.SearchCustomers(name, category, deliveryMethod, sucursal);
     //console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -45,8 +47,8 @@ customersRouter.get("/searchCustomers", async (req, res) =>{
 customersRouter.get("/getSpecificCustomer", async (req, res) =>{
   try{
     const { name = '' } = req.query;
-
-    const result = await db.SP_SelectSpecificCustomerData(name);
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_SelectSpecificCustomerData(name, sucursal);
     console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);

@@ -8,26 +8,35 @@ class DBItems {
       throw new Error("No se puede instanciar más de una vez");
     }
 
-    this._config = {
-      user: "sa",
-      password: "YourStrong!Passw0rd",
-      server: "86.48.22.228",
-      port: 1433, 
-      database: "WideWorldImporters",
-      options: {
-        encrypt: false,
-        trustServerCertificate: true,
+   // Lista con todas las configuraciones
+     this.listaConfiguraciones = [
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd2",
+        server: "86.48.22.228",
+        port: 1434,
+        database: "Limon",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
       },
-    };
+
+      {
+        user: "sa",
+        password: "YourStrong!Passw0rd3",
+        server: "86.48.22.228",
+        port: 1435,
+        database: "SanJose",
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      }
+    ]
+
 
     DBItems.#_instance = this;
-    try{
-      this._conection =  sql.connect(this._config);
-      console.log("Conectado a sql server desde dbItems.js a las " + new Date().toLocaleTimeString())
-    }catch(err){
-      console.error('Error al intentarse conectar desde db.js:', err);
-    }
-
 
   }
 
@@ -38,11 +47,26 @@ class DBItems {
     return DBItems.#_instance;
   }
 
+  verificarSucursal(pSucursal){
+    for(let i = 0; i < this.listaConfiguraciones.length; i++){
+      if(this.listaConfiguraciones[i].database === pSucursal){
+        return this.listaConfiguraciones[i]
+      }
+    }
+    throw new Error(`La sucursal "${pSucursal}" no existe`);
+  }
 
-  async SP_AllItems() {
+
+  async SP_AllItems(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_AllItems`;
+      const configuracion = this.verificarSucursal(sucursal);
+
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+            
+      const result = await request.execute("SP_AllItems");
       return result.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_AllItems:", err);
       throw err;
@@ -50,10 +74,11 @@ class DBItems {
   }
 
   //Retorna todos los datos de un item específico
-  async SP_SelectSpecificItemData(name) {
+  async SP_SelectSpecificItemData(name, sucursal) {
     try{
       //Abrir el request
-      const pool = await sql.connect(this._config);
+      const configuracion = this.verificarSucursal(sucursal);
+      const pool = await sql.connect(configuracion);
       const request = pool.request();
 
       //Poner los parámetros de entrada
@@ -76,9 +101,10 @@ class DBItems {
   }
 
   //Retorna los items que coincidan
-  async SearchItems(name, group, cantidadMinima, cantidadMaxima){
+  async SearchItems(name, group, cantidadMinima, cantidadMaxima, sucursal){
      try{
       //Abrir el request
+      const configuracion = this.verificarSucursal(sucursal);
       const pool = await sql.connect(this._config);
       const request = pool.request();
 
@@ -106,10 +132,16 @@ class DBItems {
 
 
   //Retorna todos los grupos de stock
-    async SP_AllStockGroupsItems() {
+    async SP_AllStockGroupsItems(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_AllStockGroupsItems`;
+      const configuracion = this.verificarSucursal(sucursal);
+
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+            
+      const result = await request.execute("SP_AllStockGroupsItems");
       return result.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_AllStockGroupsItems:", err);
       throw err;
@@ -117,10 +149,16 @@ class DBItems {
     }
 
     //Retorna el máximo y mínimo del inventario
-    async SP_MaxAndMinStockItemHoldings() {
+    async SP_MaxAndMinStockItemHoldings(sucursal) {
     try {
-      const result = await sql.query`EXEC SP_MaxAndMinStockItemHoldings`;
+      const configuracion = this.verificarSucursal(sucursal);
+
+      const pool = await sql.connect(configuracion);
+      const request = pool.request();
+            
+      const result = await request.execute("SP_MaxAndMinStockItemHoldings");
       return result.recordset;
+
     } catch (err) {
       console.error("Error al ejecutar SP_MaxAndMinStockItemHoldings:", err);
       throw err;

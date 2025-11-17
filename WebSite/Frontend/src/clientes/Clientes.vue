@@ -109,7 +109,8 @@ export default {
       filtroCategoria: '',
       filtroMetodoEntrega: '',
       clientesPorPagina: 10,
-      paginaActual: 1
+      paginaActual: 1,
+      sucursal: ''
     }
   },
   computed: {
@@ -124,7 +125,8 @@ export default {
   },
   methods: {
     obtenerTodosLosClientes() {
-      fetch('http://localhost:3000/customers/getAllCustomers')
+      const url = `http://localhost:3000/customers/getAllCustomers?sucursal=${encodeURIComponent(this.sucursal)}`;
+      fetch(url)
         .then(res => res.json())
         .then(result => {
           this.listaTodosLosClientes = result
@@ -148,7 +150,7 @@ export default {
     },
 
     buscarClientes(){
-      const url = `http://localhost:3000/customers/searchCustomers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}`;
+      const url = `http://localhost:3000/customers/searchCustomers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
       fetch(url)
         .then(res => {
@@ -189,6 +191,7 @@ export default {
   mounted() {
     const store = usuarioStore();
     console.log("Sucursal: " + store.sucursal)
+    this.sucursal = store.sucursal;
     this.obtenerTodosLosClientes();
     this.obtenerLasCategorias();
     this.obtenerTodosLosTiposDeEntrega();

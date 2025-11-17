@@ -7,7 +7,7 @@ class DBSales{
     if (DBSales.#_instance) {
       throw new Error("No se puede instanciar más de una vez");
     }
-
+    
     // Lista con todas las configuraciones
      this.listaConfiguraciones = [
       {

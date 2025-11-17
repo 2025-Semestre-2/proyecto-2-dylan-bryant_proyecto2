@@ -35,12 +35,12 @@ import { usuarioStore } from '../stores/usuario.js'
 export default {
     data(){
         return{
-            sucursalSeleccionada: ""
+            sucursalSeleccionada: "Limon"
         }
     },
     methods: {
     async redirigir() {
-      //Primero guardo el usuario
+      //Primero guardo la sucursal
         await this.colocarSucursal(this.sucursalSeleccionada);
         await this.$router.push('/clientes');
       

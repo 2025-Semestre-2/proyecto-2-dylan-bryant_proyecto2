@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import { usuarioStore } from '../stores/usuario.js'
   export default {
     data(){
       return{
@@ -108,7 +109,8 @@
         filtroCategoria: '',
         filtroMetodoEntrega: '',
         proveedoresPorPagina: 10,
-        paginaActual: 1
+        paginaActual: 1,
+        sucursal: ''
       }
     },
     computed: {
@@ -124,7 +126,8 @@
 
     methods: {
       obtenerTodosLosProveedores(){
-        fetch('http://localhost:3000/suppliers/getAllSuppliers')
+        const url = `http://localhost:3000/suppliers/getAllSuppliers?sucursal=${encodeURIComponent(this.sucursal)}`;
+        fetch(url)
         .then(res => res.json())
         .then(result => {
           this.listaTodosLosProveedores = result
@@ -132,7 +135,8 @@
       },
 
       obtenerLasCategorias(){
-      fetch('http://localhost:3000/suppliers/getAllCategories')
+      const url = `http://localhost:3000/suppliers/getAllCategories?sucursal=${encodeURIComponent(this.sucursal)}`;
+      fetch(url)
         .then(res => res.json())
         .then(result => {
           this.listaCategorias = result
@@ -148,7 +152,7 @@
     },
 
     buscarProveedores(){
-      const url = `http://localhost:3000/suppliers/searchSuppliers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}`;
+      const url = `http://localhost:3000/suppliers/searchSuppliers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
       fetch(url)
         .then(res => {
@@ -185,6 +189,9 @@
     },
 
     mounted(){
+      const store = usuarioStore();
+      console.log("Sucursal: " + store.sucursal)
+      this.sucursal = store.sucursal;
       this.obtenerTodosLosProveedores();
       this.obtenerLasCategorias();
       this.obtenerTodosLosTiposDeEntrega();

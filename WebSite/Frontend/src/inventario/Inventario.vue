@@ -116,6 +116,7 @@
 </template>
 
 <script>
+import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
@@ -129,7 +130,8 @@
                 minimoOriginal: 0,
                 itemsPorPagina: 10,
                 paginaActual: 1,
-                minimoYmaximo: null
+                minimoYmaximo: null,
+                sucursal: ''
             }
         },
         computed:{  
@@ -145,7 +147,8 @@
 
         methods:{
             obtenerTodosLosItems() {
-            fetch('http://localhost:3000/items/getAllItems')
+            const url = `http://localhost:3000/items/getAllItems?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                 this.listaTodosLosItems = result
@@ -224,6 +227,9 @@
         },
 
         mounted(){
+           const store = usuarioStore();
+            console.log("Sucursal: " + store.sucursal)
+            this.sucursal = store.sucursal;
             this.obtenerTodosLosItems();
             this.obtenerLosGrupos();
             this.obtenerElMaximoYMinimo();

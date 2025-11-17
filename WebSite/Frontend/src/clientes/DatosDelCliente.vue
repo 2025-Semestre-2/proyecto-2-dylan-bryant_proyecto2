@@ -26,7 +26,7 @@
       </p>
 
       <!-- Mapa dentro del v-else -->
-      <div v-if="cliente?.DeliveryLocation?.points?.length" class="mt-6 h-96 w-full rounded-lg">
+      <div v-if="cliente != null" class="mt-6 h-96 w-full rounded-lg">
         <div id="map" class="h-full w-full rounded-lg"></div>
       </div>
     </div>
@@ -38,12 +38,13 @@
 import { nextTick } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
+import { usuarioStore } from '../stores/usuario.js'
 export default {
   data() {
     return {
       cliente: null,
-      map: null
+      map: null,
+      sucursal: ''
     }
   },
 
@@ -52,7 +53,7 @@ export default {
       if (!nombre) return;
 
       try {
-        const url = `http://localhost:3000/customers/getSpecificCustomer?name=${encodeURIComponent(nombre)}`;
+        const url = `http://localhost:3000/customers/getSpecificCustomer?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Error en la respuesta del servidor');
         const result = await res.json();
@@ -67,9 +68,11 @@ export default {
     },
 
    mostrarMapa() {
-    if (!this.cliente?.DeliveryLocation?.points?.length) return;
+    if (!this.cliente) return;
 
-    const { lat, lng } = this.cliente.DeliveryLocation.points[0];
+    const lat = this.cliente.Latitude
+    const lng = this.cliente.Longitude
+  
 
     
     if (this.map) this.map.remove();
@@ -90,6 +93,9 @@ export default {
   },
 
   mounted() {
+    const store = usuarioStore();
+    console.log("Sucursal: " + store.sucursal)
+    this.sucursal = store.sucursal;
     const nombreCliente = localStorage.getItem('clienteSeleccionado') || '';
     this.buscarClienteEspecifico(nombreCliente);
   }

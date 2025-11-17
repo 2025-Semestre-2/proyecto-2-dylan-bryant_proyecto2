@@ -14,7 +14,7 @@ AS
 		--Declaración de variable para el like
 		DECLARE @CustomerNameLike AS NVARCHAR(102);
 		SET @CustomerNameLike = '%' + @CustomerName + '%';
-		SELECT Name, Category, DeliveryMethod FROM AllCustomers
+		SELECT CustomerID, Name, Category, DeliveryMethod FROM AllCustomers
 		WHERE (Name LIKE @CustomerNameLike) AND (@Category = '' OR Category = @Category) AND (@DeliveryMethod = '' OR DeliveryMethod = @DeliveryMethod)
 		ORDER BY Name ASC;
 	END TRY

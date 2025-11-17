@@ -7,7 +7,8 @@ const db = DB.getInstance();
 //Obtener todos los items
 itemsRouter.get("/getAllItems", async (req, res) =>{
   try{
-    const result = await db.SP_AllItems();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_AllItems(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_AllItems:", err);
@@ -21,12 +22,12 @@ itemsRouter.get("/searchItems", async (req, res) =>{
     console.log("Nombre: ", name);
     console.log("Grupo: ", group);
     
-
+    const sucursal = req.query.sucursal;
     const minQ = minQuantity !== '' ? parseInt(minQuantity, 10) : null;
     const maxQ = maxQuantity !== '' ? parseInt(maxQuantity, 10) : null;
     console.log("Cantidad Mínima: ", minQ);
     console.log("Cantidad máxima:", maxQ);
-    const result = await db.SearchItems(name, group, minQ, maxQ);
+    const result = await db.SearchItems(name, group, minQ, maxQ, sucursal);
     //console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -45,8 +46,8 @@ itemsRouter.get("/searchItems", async (req, res) =>{
 itemsRouter.get("/getSpecificItem", async (req, res) =>{
   try{
     const { name = '' } = req.query;
-
-    const result = await db.SP_SelectSpecificItemData(name);
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_SelectSpecificItemData(name, sucursal);
     console.log(result);
     if(result.resultado == 1){
       return res.json(result.filas);
@@ -63,7 +64,8 @@ itemsRouter.get("/getSpecificItem", async (req, res) =>{
 //Retorna la información de los tipos de grupos
 itemsRouter.get("/getStockGroupItem", async (req, res) =>{
   try{
-    const result = await db.SP_AllStockGroupsItems();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_AllStockGroupsItems(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_AllStockGroupsItems:", err);
@@ -74,7 +76,8 @@ itemsRouter.get("/getStockGroupItem", async (req, res) =>{
 //Obtengo los máximos y mínimos del inventario
 itemsRouter.get("/getMaxAndMinStockItemHoldings", async (req, res) =>{
   try{
-    const result = await db.SP_MaxAndMinStockItemHoldings();
+    const sucursal = req.query.sucursal;
+    const result = await db.SP_MaxAndMinStockItemHoldings(sucursal);
     res.json(result); //Por defecto ya va con el código 200
   }catch(err){
     console.error("Error al ejecutar el procedimiento almacenado SP_MaxAndMinStockItemHoldings:", err);
