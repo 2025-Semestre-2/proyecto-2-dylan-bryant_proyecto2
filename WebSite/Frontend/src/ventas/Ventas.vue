@@ -135,6 +135,7 @@
 </template>
 
 <script>
+import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
@@ -151,7 +152,8 @@
                 montoMinimoOriginal: 0,
                 montoMaximoOriginal: 0,
                 facturasPorPagina: 10,
-                paginaActual: 1
+                paginaActual: 1,
+                sucursal: ''
             }
         },
         computed:{
@@ -167,7 +169,8 @@
 
         methods:{
             obtenerTodasLasFacturas() {
-            fetch('http://localhost:3000/sales/getAllInvoices')
+            const url = `http://localhost:3000/sales/getAllInvoices?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                 this.listaTodasLasFacturas = result
@@ -175,6 +178,7 @@
             },
 
             obtenerTodosLosTiposDeEntrega(){
+              
             fetch('http://localhost:3000/customers/getAllDeliveryMethods')
                 .then(res => res.json())
                 .then(result => {
@@ -184,7 +188,7 @@
 
             buscarFacturas(){
             const url = `http://localhost:3000/sales/searchInvoices?customer=${encodeURIComponent(this.filtroNombreCliente)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&minDate=${encodeURIComponent(this.filtroFechaMinima)}
-            &maxDate=${encodeURIComponent(this.filtroFechaMaxima)}&minAmount=${encodeURIComponent(this.filtroMontoMinimo)}&maxAmount=${encodeURIComponent(this.filtroMontoMaximo)}`;
+            &maxDate=${encodeURIComponent(this.filtroFechaMaxima)}&minAmount=${encodeURIComponent(this.filtroMontoMinimo)}&maxAmount=${encodeURIComponent(this.filtroMontoMaximo)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
             fetch(url)
                 .then(res => {
@@ -200,7 +204,8 @@
             },
 
             obtenerFechaMaximaYminima(){
-            fetch('http://localhost:3000/sales/getMinAndMaxDate')
+            const url = `http://localhost:3000/sales/getMinAndMaxDate?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                     const resultadoFecha = result[0]
@@ -212,7 +217,8 @@
             },
 
             obtenerFechaMaximaYminima(){
-            fetch('http://localhost:3000/sales/getMinAndMaxDate')
+            const url = `http://localhost:3000/sales/getMinAndMaxDate?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                     const resultadoFecha = result[0]
@@ -226,7 +232,8 @@
             },
 
             obtenerMontoMaximoYminomo(){
-            fetch('http://localhost:3000/sales/getMinAndMaxAmount')
+            const url = `http://localhost:3000/sales/getMinAndMaxAmount?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                     const resultadoMonto = result[0]
@@ -276,6 +283,9 @@
 
     },
         mounted(){
+            const store = usuarioStore();
+            console.log("Sucursal: " + store.sucursal)
+            this.sucursal = store.sucursal;
             this.obtenerTodasLasFacturas();
             this.obtenerTodosLosTiposDeEntrega();
             this.obtenerFechaMaximaYminima();

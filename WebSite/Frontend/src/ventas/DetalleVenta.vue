@@ -50,11 +50,13 @@
 </template>
 
 <script>
+    import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
                 encabezado: null,
-                lineas: []
+                lineas: [],
+                sucursal: ''
             }
         },
      
@@ -64,7 +66,7 @@
             if (!id) return;
 
             try {
-                const url = `http://localhost:3000/sales/getSpecificHeader?ID=${encodeURIComponent(id)}`;
+                const url = `http://localhost:3000/sales/getSpecificHeader?ID=${encodeURIComponent(id)}&sucursal=${encodeURIComponent(this.sucursal)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
                 const result = await res.json();
@@ -81,7 +83,7 @@
             if (!id) return;
 
             try {
-                const url = `http://localhost:3000/sales/getInvoiceLines?ID=${encodeURIComponent(id)}`;
+                const url = `http://localhost:3000/sales/getInvoiceLines?ID=${encodeURIComponent(id)}&sucursal=${encodeURIComponent(this.sucursal)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
                 const result = await res.json();
@@ -110,6 +112,9 @@
         },
 
         async mounted(){
+            const store = usuarioStore();
+            console.log("Sucursal: " + store.sucursal)
+            this.sucursal = store.sucursal;
             const id = localStorage.getItem('facturaSeleccionada') || '';
             await this.buscarEncabezado(id);
             this.buscarLineas(id);

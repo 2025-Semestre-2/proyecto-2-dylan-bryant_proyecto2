@@ -19,7 +19,7 @@ class DBStats{
         trustServerCertificate: true,
       },
     };
-
+    
     DBStats.#_instance = this;
     try{
       this._conection =  sql.connect(this._config);

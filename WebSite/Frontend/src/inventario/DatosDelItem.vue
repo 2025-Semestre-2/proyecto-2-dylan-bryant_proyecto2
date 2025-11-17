@@ -23,10 +23,12 @@
     </div>
 </template>
 <script>
+import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
-                item: null
+                item: null,
+                sucursal: ''
             }
         },
 
@@ -35,7 +37,7 @@
             if (!nombre) return;
 
             try {
-                const url = `http://localhost:3000/items/getSpecificItem?name=${encodeURIComponent(nombre)}`;
+                const url = `http://localhost:3000/items/getSpecificItem?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
                 const result = await res.json();
@@ -58,6 +60,9 @@
 
         },
         mounted(){
+            const store = usuarioStore();
+            console.log("Sucursal: " + store.sucursal)
+            this.sucursal = store.sucursal;
             const item = localStorage.getItem('itemSeleccionado') || '';
             console.log("Item: ", item)
             this.buscarItem(item);

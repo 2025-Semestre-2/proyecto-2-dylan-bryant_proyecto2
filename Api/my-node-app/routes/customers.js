@@ -2,12 +2,28 @@ const express = require('express')
 const customersRouter = express.Router()
 const DB = require("../db/dbCustomers");
 const db = DB.getInstance();
+const crypto = require("crypto");
 
 //Ejemplo
 
 customersRouter.get("/", (req, res) => {
   //Ejecutar la función de la base de datos
   res.send('Hello from customers');
+});
+
+customersRouter.post('/login', async (req, res) =>{
+  try{
+    const usuario = req.body.usuario;
+    const contrasenia = req.body.contrasenia;
+    const sucursal = req.body.sucursal;
+    console.log("Usuario: " + usuario, " Contraseña: " + contrasenia + " Sucursal: "+ sucursal)
+    const hash = crypto.createHash("sha256").update(contrasenia).digest();
+    const result = await db.login(usuario, hash, sucursal);
+    res.json({resultado: result}); //Por defecto ya va con el código 200
+  }catch(err){
+    console.error("Error al ejecutar el procedimiento almacenado InicioSesion:", err);
+    res.status(500).send(`Error al ejecutar el procedimiento almacenado InicioSesion: ${err.message}`);
+  }    
 });
 
 customersRouter.get("/getAllCustomers", async (req, res) =>{

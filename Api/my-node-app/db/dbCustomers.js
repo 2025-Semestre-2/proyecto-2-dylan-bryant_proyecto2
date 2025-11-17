@@ -184,6 +184,37 @@ class DBCustomers {
       throw err;
     }
   }
+
+  async login(usuario, contrasenia, sucursal){
+    try{
+          //Abrir el request
+          const configuracion = this.verificarSucursal(sucursal);
+          console.log("Config: " + configuracion )
+          const poolCorporativo = new sql.ConnectionPool(configuracion);
+          await poolCorporativo.connect();
+          const request = poolCorporativo.request();
+    
+          //Poner los parámetros de entrada
+          request.input("username", sql.NVarChar(30), usuario); //Nombre del parámetro, tipo y la variable asignada de esta función
+          request.input("password", sql.VarBinary(256), contrasenia);
+         
+    
+          //Ejecutar el procedimiento
+          const result = await request.execute("InicioSesion");
+
+          //Obtener el número que me indica si se hizo bien o con error
+           const salida = result.recordset[0].LoginCorrecto;
+
+          console.log("Resultado login:", salida);
+
+          return salida === 1;
+        }catch (err) {  
+          console.error("Error al ejecutar InicioSesion:", err);
+          throw err;
+        }
+  }
 }
+
+
 
 module.exports = DBCustomers;

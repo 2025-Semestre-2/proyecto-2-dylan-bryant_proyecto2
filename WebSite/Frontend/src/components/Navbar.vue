@@ -8,6 +8,7 @@
             <router-link to="/ventas" class="btn btn-ghost text-xl">Ventas</router-link>
             
         </div>
+        <!--
         <div class="flex-none">
             <ul class="menu menu-horizontal px-1  text-xl">
       
@@ -25,6 +26,7 @@
             </li>
             </ul>
         </div>
+        -->
     </div>
 
     

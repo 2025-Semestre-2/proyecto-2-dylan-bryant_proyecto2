@@ -60,6 +60,9 @@
     </fieldset>
     
   </div>
+  <div class="flex justify-center">
+    <button class="btn btn-error " @click="agregarProducto">Agregar Producto</button>
+  </div>
     
     <div class="flex justify-center p-2">
     <div class="w-[70%] overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -156,7 +159,8 @@ import { usuarioStore } from '../stores/usuario.js'
             },
 
             obtenerLosGrupos(){
-            fetch('http://localhost:3000/items/getStockGroupItem')
+            const url = `http://localhost:3000/items/getStockGroupItem?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                     this.listaGrupos = result
@@ -164,7 +168,8 @@ import { usuarioStore } from '../stores/usuario.js'
             },
 
             obtenerElMaximoYMinimo(){
-            fetch('http://localhost:3000/items/getMaxAndMinStockItemHoldings')
+            const url = `http://localhost:3000/items/getMaxAndMinStockItemHoldings?sucursal=${encodeURIComponent(this.sucursal)}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(result => {
                     this.minimoYmaximo = result[0]
@@ -178,7 +183,7 @@ import { usuarioStore } from '../stores/usuario.js'
             },
 
             buscarItems(){
-            const url = `http://localhost:3000/items/searchItems?name=${encodeURIComponent(this.filtroNombre)}&group=${encodeURIComponent(this.filtroGrupo)}&maxQuantity=${encodeURIComponent(this.filtroMaximo)}&minQuantity=${encodeURIComponent(this.filtroMinimo)}`;
+            const url = `http://localhost:3000/items/searchItems?name=${encodeURIComponent(this.filtroNombre)}&group=${encodeURIComponent(this.filtroGrupo)}&maxQuantity=${encodeURIComponent(this.filtroMaximo)}&minQuantity=${encodeURIComponent(this.filtroMinimo)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
             fetch(url)
                 .then(res => {
@@ -223,11 +228,15 @@ import { usuarioStore } from '../stores/usuario.js'
                 localStorage.setItem('itemSeleccionado', nombre);
                 //Abro la otra
                 this.$router.push('/datosDelItem');
+            },
+
+            agregarProducto(){
+              this.$router.push('/agregarProducto');
             }
         },
 
         mounted(){
-           const store = usuarioStore();
+            const store = usuarioStore();
             console.log("Sucursal: " + store.sucursal)
             this.sucursal = store.sucursal;
             this.obtenerTodosLosItems();

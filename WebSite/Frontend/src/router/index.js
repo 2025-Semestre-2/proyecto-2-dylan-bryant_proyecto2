@@ -59,6 +59,13 @@ const router = createRouter({
       {path: '', name: 'datosDelItem', component: () => import('../inventario/DatosDelItem.vue')}
     ]  
   },
+  { path: '/agregarProducto', 
+    component: Layout,
+    children:[
+      {path: '', name: 'agregarProducto', component: () => import('../inventario/AgregarItem.vue')}
+    ]  
+  },
+ 
   { path: '/ventas', 
     component: Layout,
     children:[
