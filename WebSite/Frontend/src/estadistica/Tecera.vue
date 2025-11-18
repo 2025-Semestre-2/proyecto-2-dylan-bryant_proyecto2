@@ -6,13 +6,33 @@
     <div class="flex flex-wrap gap-15 justify-center">
 
         <fieldset class="fieldset">
-        <legend class="fieldset-legend">Año</legend>
+        <legend class="fieldset-legend">Año Inicio</legend>
         <select class="select" v-model="filtro" @change="cambioEnLosFiltros">
         <option selected value="2013">2013</option>
         <option value="2014">2014</option>
         <option value="2015">2015</option>
         <option value="2016">2016</option>
       </select>
+        </fieldset>
+
+         <fieldset class="fieldset">
+        <legend class="fieldset-legend">Año Fin</legend>
+        <select class="select" v-model="filtro2" @change="cambioEnLosFiltros">
+        <option selected value="2013">2013</option>
+        <option value="2014">2014</option>
+        <option value="2015">2015</option>
+        <option value="2016">2016</option>
+      </select>
+        </fieldset>
+
+         <fieldset class="fieldset">
+        <legend class="fieldset-legend">Sucursal</legend>
+        <select class="select" v-model="sucursalSeleccionada" @change="cambioEnLosFiltros">
+          <option value="Limon" selected>Limón</option>
+          <option value="SanJose">San José</option>
+          <option value="Corporativo">Consolidado</option>
+        </select>
+        <p class="label">Puede consultar una única sucursal o un consolidado entre todas.</p>
         </fieldset>
 
     </div>
@@ -46,17 +66,21 @@
 </template>
 
 <script>
+    import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
                 filtro: 2013,
-                lista: []
+                filtro2: 2016,
+                lista: [],
+                sucursalSeleccionada: 'Limon',
+                link: ''
             }
             
         },
         methods:{
             buscar(){
-            const url = `http://localhost:3000/stats/terceraEstadistica?anio=${encodeURIComponent(this.filtro)}`;
+            const url = `${this.link}/stats/terceraEstadistica?anio=${encodeURIComponent(this.filtro)}&anioFin=${encodeURIComponent(this.filtro2)}&sucursal=${encodeURIComponent(this.sucursalSeleccionada)}`;
 
             fetch(url)
                 .then(res => {
@@ -76,8 +100,10 @@
             }
         },
         mounted(){
+            const store = usuarioStore();
+            this.link = store.link;
             this.buscar();
-
+            
         }
     }
 </script>

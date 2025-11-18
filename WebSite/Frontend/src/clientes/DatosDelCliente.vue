@@ -44,7 +44,8 @@ export default {
     return {
       cliente: null,
       map: null,
-      sucursal: ''
+      sucursal: '',
+      link: ''
     }
   },
 
@@ -53,7 +54,7 @@ export default {
       if (!nombre) return;
 
       try {
-        const url = `http://localhost:3000/customers/getSpecificCustomer?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+        const url = `${this.link}/customers/getSpecificCustomer?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Error en la respuesta del servidor');
         const result = await res.json();
@@ -96,6 +97,7 @@ export default {
     const store = usuarioStore();
     console.log("Sucursal: " + store.sucursal)
     this.sucursal = store.sucursal;
+    this.link = store.link;
     const nombreCliente = localStorage.getItem('clienteSeleccionado') || '';
     this.buscarClienteEspecifico(nombreCliente);
   }

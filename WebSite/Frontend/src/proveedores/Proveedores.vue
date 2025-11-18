@@ -110,7 +110,8 @@ import { usuarioStore } from '../stores/usuario.js'
         filtroMetodoEntrega: '',
         proveedoresPorPagina: 10,
         paginaActual: 1,
-        sucursal: ''
+        sucursal: '',
+        link:''
       }
     },
     computed: {
@@ -126,7 +127,7 @@ import { usuarioStore } from '../stores/usuario.js'
 
     methods: {
       obtenerTodosLosProveedores(){
-        const url = `http://localhost:3000/suppliers/getAllSuppliers?sucursal=${encodeURIComponent(this.sucursal)}`;
+        const url = `${this.link}/suppliers/getAllSuppliers?sucursal=${encodeURIComponent(this.sucursal)}`;
         fetch(url)
         .then(res => res.json())
         .then(result => {
@@ -135,7 +136,7 @@ import { usuarioStore } from '../stores/usuario.js'
       },
 
       obtenerLasCategorias(){
-      const url = `http://localhost:3000/suppliers/getAllCategories?sucursal=${encodeURIComponent(this.sucursal)}`;
+      const url = `${this.link}/suppliers/getAllCategories?sucursal=${encodeURIComponent(this.sucursal)}`;
       fetch(url)
         .then(res => res.json())
         .then(result => {
@@ -144,7 +145,7 @@ import { usuarioStore } from '../stores/usuario.js'
     },
 
     obtenerTodosLosTiposDeEntrega(){
-      fetch('http://localhost:3000/customers/getAllDeliveryMethods')
+      fetch(`${this.link}/customers/getAllDeliveryMethods`)
         .then(res => res.json())
         .then(result => {
           this.listaMetodosDeEntrega = result
@@ -152,7 +153,7 @@ import { usuarioStore } from '../stores/usuario.js'
     },
 
     buscarProveedores(){
-      const url = `http://localhost:3000/suppliers/searchSuppliers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+      const url = `${this.link}/suppliers/searchSuppliers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
       fetch(url)
         .then(res => {
@@ -192,6 +193,7 @@ import { usuarioStore } from '../stores/usuario.js'
       const store = usuarioStore();
       console.log("Sucursal: " + store.sucursal)
       this.sucursal = store.sucursal;
+      this.link = store.link
       this.obtenerTodosLosProveedores();
       this.obtenerLasCategorias();
       this.obtenerTodosLosTiposDeEntrega();

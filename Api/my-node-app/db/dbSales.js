@@ -12,7 +12,7 @@ class DBSales{
      this.listaConfiguraciones = [
       {
         user: "sa",
-        password: "YourStrong!Passw0rd2",
+        password: "YourStrongPassw0rd2",
         server: "86.48.22.228",
         port: 1434,
         database: "Limon",
@@ -24,7 +24,7 @@ class DBSales{
 
       {
         user: "sa",
-        password: "YourStrong!Passw0rd3",
+        password: "YourStrongPassw0rd3",
         server: "86.48.22.228",
         port: 1435,
         database: "SanJose",
@@ -108,7 +108,7 @@ class DBSales{
       try{
         //Abrir el request
         const configuracion = this.verificarSucursal(sucursal);
-        const pool = await sql.connect(sucursal);
+        const pool = await sql.connect(configuracion);
         const request = pool.request();
   
         //Poner los parámetros de entrada
@@ -135,7 +135,7 @@ class DBSales{
     try{
       //Abrir el request
       const configuracion = this.verificarSucursal(sucursal);
-      const pool = await sql.connect(sucursal);
+      const pool = await sql.connect(configuracion);
       const request = pool.request();
   
       //Poner los parámetros de entrada

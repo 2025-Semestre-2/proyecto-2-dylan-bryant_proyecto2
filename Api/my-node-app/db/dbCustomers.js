@@ -22,7 +22,7 @@ class DBCustomers {
       },
       {
         user: "sa",
-        password: "YourStrong!Passw0rd2",
+        password: "YourStrongPassw0rd2",
         server: "86.48.22.228",
         port: 1434,
         database: "Limon",
@@ -34,7 +34,7 @@ class DBCustomers {
 
       {
         user: "sa",
-        password: "YourStrong!Passw0rd3",
+        password: "YourStrongPassw0rd3",
         server: "86.48.22.228",
         port: 1435,
         database: "SanJose",

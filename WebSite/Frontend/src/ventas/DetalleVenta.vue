@@ -56,7 +56,8 @@
             return{
                 encabezado: null,
                 lineas: [],
-                sucursal: ''
+                sucursal: '',
+                link: ''
             }
         },
      
@@ -66,7 +67,7 @@
             if (!id) return;
 
             try {
-                const url = `http://localhost:3000/sales/getSpecificHeader?ID=${encodeURIComponent(id)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+                const url = `${this.link}/sales/getSpecificHeader?ID=${encodeURIComponent(id)}&sucursal=${encodeURIComponent(this.sucursal)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
                 const result = await res.json();
@@ -83,7 +84,7 @@
             if (!id) return;
 
             try {
-                const url = `http://localhost:3000/sales/getInvoiceLines?ID=${encodeURIComponent(id)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+                const url = `${this.link}/sales/getInvoiceLines?ID=${encodeURIComponent(id)}&sucursal=${encodeURIComponent(this.sucursal)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
                 const result = await res.json();
@@ -116,8 +117,10 @@
             console.log("Sucursal: " + store.sucursal)
             this.sucursal = store.sucursal;
             const id = localStorage.getItem('facturaSeleccionada') || '';
+            console.log("ID Factura: " + id)
+            this.link = store.link;
             await this.buscarEncabezado(id);
-            this.buscarLineas(id);
+            await this.buscarLineas(id);
         }
     }
 </script>

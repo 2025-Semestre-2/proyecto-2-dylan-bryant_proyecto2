@@ -6,9 +6,9 @@ const db = DB.getInstance();
 //Ejemplo
 statsRouter.get("/primeraEstadistica", async (req, res) =>{
   try{
-    const { proveedor = '', categoria = '' } = req.query;
- 
-    const result = await db.PrimeraEstadistica(proveedor, categoria);
+    const { proveedor = '', sucursal = '' } = req.query;
+    console.log("SUCURSAL PRIMRA: "+ sucursal )
+    const result = await db.PrimeraEstadistica(proveedor, proveedor, sucursal);
     console.log(result);
     return res.json(result);
 
@@ -21,9 +21,9 @@ statsRouter.get("/primeraEstadistica", async (req, res) =>{
 
 statsRouter.get("/segundaEstadistica", async (req, res) =>{
   try{
-    const { cliente = '', categoria = '' } = req.query;
- 
-    const result = await db.SegundaEstadistica(cliente, categoria);
+    const { cliente = '', sucursal = '' } = req.query;
+
+    const result = await db.SegundaEstadistica(cliente, cliente, sucursal);
     console.log(result);
     return res.json(result);
 
@@ -36,10 +36,10 @@ statsRouter.get("/segundaEstadistica", async (req, res) =>{
 
 statsRouter.get("/terceraEstadistica", async (req, res) =>{
   try{
-    const { anio = '' } = req.query;
+    const { anio = '', anioFin = '', sucursal = '' } = req.query;
     const anioInt = anio !== '' ? parseInt(anio, 10) : null;
-
-    const result = await db.TerceraEstadistica(anioInt);
+    const anioInt2 = anioFin !== '' ? parseInt(anioFin, 10) : null;
+    const result = await db.TerceraEstadistica(anioInt, anioInt2, sucursal);
     console.log(result);
     return res.json(result);
 
@@ -51,10 +51,10 @@ statsRouter.get("/terceraEstadistica", async (req, res) =>{
 
 statsRouter.get("/cuartaEstadistica", async (req, res) =>{
   try{
-    const { anio = '' } = req.query;
+    const { anio = '', anioFin = '',sucursal = '' } = req.query;
     const anioInt = anio !== '' ? parseInt(anio, 10) : null;
-
-    const result = await db.CuartaEstadistica(anioInt);
+    const anioInt2 = anioFin !== '' ? parseInt(anioFin, 10) : null;
+    const result = await db.CuartaEstadistica(anioInt, anioInt2, sucursal);
     console.log(result);
     return res.json(result);
 
@@ -67,10 +67,10 @@ statsRouter.get("/cuartaEstadistica", async (req, res) =>{
 
 statsRouter.get("/quintaEstadistica", async (req, res) =>{
   try{
-    const { anio = '' } = req.query;
+    const { anio = '', anioFin = '', sucursal = '' } = req.query;
     const anioInt = anio !== '' ? parseInt(anio, 10) : null;
-
-    const result = await db.QuintaEstadistica(anioInt);
+    const anioInt2 = anioFin !== '' ? parseInt(anioFin, 10) : null;
+    const result = await db.QuintaEstadistica(anioInt, anioInt2, sucursal);
     console.log(result);
    
     return res.json(result);

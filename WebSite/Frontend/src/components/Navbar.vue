@@ -1,12 +1,21 @@
 <template>
     <div class="navbar bg-sky-300 shadow-sm">
-        <div class="flex-1">
+        <div class="flex-1" v-if="sucursal === 'Limon' || sucursal === 'SanJose'">
             <a class="btn btn-ghost text-xl">Wide World Importers</a>
             <router-link to="/clientes" class="btn btn-ghost text-xl">Clientes</router-link>
             <router-link to="/proveedores" class="btn btn-ghost text-xl">Proveedores</router-link>
             <router-link to="/inventario" class="btn btn-ghost text-xl">Inventario</router-link>
             <router-link to="/ventas" class="btn btn-ghost text-xl">Ventas</router-link>
             
+        </div>
+
+         <div class="flex-1" v-if="sucursal === 'Corporativo'">
+            <a class="btn btn-ghost text-xl">Wide World Importers</a>
+            <router-link to="/primeraEstadistica" class="btn btn-ghost text-xl">Primera</router-link>
+            <router-link to="/segundaEstadistica" class="btn btn-ghost text-xl">Segunda</router-link>
+            <router-link to="/terceraEstadistica" class="btn btn-ghost text-xl">Tercera</router-link>
+            <router-link to="/cuartaEstadistica" class="btn btn-ghost text-xl">Cuarta</router-link>
+            <router-link to="/quintaEstadistica" class="btn btn-ghost text-xl">Quinta</router-link>
         </div>
         <!--
         <div class="flex-none">
@@ -31,3 +40,18 @@
 
     
 </template>
+
+<script>
+    import { usuarioStore } from '../stores/usuario.js'
+    export default{
+        data(){
+            return{
+                sucursal: ''
+            }
+        },
+        mounted(){
+            const store = usuarioStore();
+            this.sucursal = store.sucursal;
+        }
+    }
+</script>

@@ -11,6 +11,16 @@
         <p class="label">Puede ingresar texto que pertenezca al cliente o la categoría</p>
         </fieldset>
 
+        <fieldset class="fieldset">
+        <legend class="fieldset-legend">Sucursal</legend>
+        <select class="select" v-model="sucursalSeleccionada" @change="cambioEnLosFiltros">
+                    <option value="Limon" selected>Limón</option>
+                    <option value="SanJose">San José</option>
+                    <option value="Corporativo">Consolidado</option>
+        </select>
+        <p class="label">Puede consultar una única sucursal o un consolidado entre todas.</p>
+        </fieldset>
+
     </div>
 
 
@@ -44,17 +54,20 @@
 </template>
 
 <script>
+  import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
                 filtro: '',
-                lista: []
+                lista: [],
+                sucursalSeleccionada: 'Limon',
+                link: ''
             }
             
         },
         methods:{
             buscar(){
-            const url = `http://localhost:3000/stats/segundaEstadistica?cliente=${encodeURIComponent(this.filtro)}`;
+            const url = `${this.link}/stats/segundaEstadistica?cliente=${encodeURIComponent(this.filtro)}&sucursal=${encodeURIComponent(this.sucursalSeleccionada)}`;
 
             fetch(url)
                 .then(res => {
@@ -74,6 +87,8 @@
             }
         },
         mounted(){
+            const store = usuarioStore();
+            this.link = store.link;
             this.buscar();
 
         }

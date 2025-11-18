@@ -134,7 +134,8 @@ import { usuarioStore } from '../stores/usuario.js'
                 itemsPorPagina: 10,
                 paginaActual: 1,
                 minimoYmaximo: null,
-                sucursal: ''
+                sucursal: '',
+                link: ''
             }
         },
         computed:{  
@@ -150,7 +151,7 @@ import { usuarioStore } from '../stores/usuario.js'
 
         methods:{
             obtenerTodosLosItems() {
-            const url = `http://localhost:3000/items/getAllItems?sucursal=${encodeURIComponent(this.sucursal)}`;
+            const url = `${this.link}/items/getAllItems?sucursal=${encodeURIComponent(this.sucursal)}`;
             fetch(url)
                 .then(res => res.json())
                 .then(result => {
@@ -159,7 +160,7 @@ import { usuarioStore } from '../stores/usuario.js'
             },
 
             obtenerLosGrupos(){
-            const url = `http://localhost:3000/items/getStockGroupItem?sucursal=${encodeURIComponent(this.sucursal)}`;
+            const url = `${this.link}/items/getStockGroupItem?sucursal=${encodeURIComponent(this.sucursal)}`;
             fetch(url)
                 .then(res => res.json())
                 .then(result => {
@@ -168,7 +169,7 @@ import { usuarioStore } from '../stores/usuario.js'
             },
 
             obtenerElMaximoYMinimo(){
-            const url = `http://localhost:3000/items/getMaxAndMinStockItemHoldings?sucursal=${encodeURIComponent(this.sucursal)}`;
+            const url = `${this.link}/items/getMaxAndMinStockItemHoldings?sucursal=${encodeURIComponent(this.sucursal)}`;
             fetch(url)
                 .then(res => res.json())
                 .then(result => {
@@ -183,7 +184,7 @@ import { usuarioStore } from '../stores/usuario.js'
             },
 
             buscarItems(){
-            const url = `http://localhost:3000/items/searchItems?name=${encodeURIComponent(this.filtroNombre)}&group=${encodeURIComponent(this.filtroGrupo)}&maxQuantity=${encodeURIComponent(this.filtroMaximo)}&minQuantity=${encodeURIComponent(this.filtroMinimo)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+            const url = `${this.link}/items/searchItems?name=${encodeURIComponent(this.filtroNombre)}&group=${encodeURIComponent(this.filtroGrupo)}&maxQuantity=${encodeURIComponent(this.filtroMaximo)}&minQuantity=${encodeURIComponent(this.filtroMinimo)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
             fetch(url)
                 .then(res => {
@@ -239,6 +240,7 @@ import { usuarioStore } from '../stores/usuario.js'
             const store = usuarioStore();
             console.log("Sucursal: " + store.sucursal)
             this.sucursal = store.sucursal;
+            this.link = store.link;
             this.obtenerTodosLosItems();
             this.obtenerLosGrupos();
             this.obtenerElMaximoYMinimo();

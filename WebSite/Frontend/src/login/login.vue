@@ -23,7 +23,6 @@
 
                 <div class="botonesEncabezado flex justify-center gap-5 p-5">
                     <button class="btn bg-[#03366A] text-white hover:bg-[#022f5c]" type="submit">Iniciar Sesión</button>
-                    <button class="btn bg-[#03366A] text-white hover:bg-[#022f5c]" type="button">Olvidé mi Contraseña</button>
                 </div>
 
             </form>
@@ -37,7 +36,8 @@ export default {
         return{
             usuario: '',
             sucursalSeleccionada: "Limon",
-            contrasenia: ''
+            contrasenia: '',
+            link: ''
         }
     },
     methods: {
@@ -50,7 +50,7 @@ export default {
 
     async iniciarSesion(){ //Hay que hacer async todo esto porque no espera
                 //Llamar al procedimiento que me retorna si puedo iniciar sesión
-                fetch('http://localhost:3000/customers/login', {
+                fetch(`${this.link}/customers/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ usuario: this.usuario, contrasenia: this.contrasenia, sucursal: this.sucursalSeleccionada}) 
@@ -64,6 +64,9 @@ export default {
                             //Colocar el usuario en el pinia y seguir
                             await this.colocarSucursal(this.sucursalSeleccionada);
                             await this.$router.push('/clientes') //Pasar a la siguiente ventana
+                        }else{
+                            await this.colocarSucursal("Corporativo");
+                            await this.$router.push('/primeraEstadistica') //Pasar a la siguiente ventana
                         }
                         
                     }else{
@@ -78,6 +81,13 @@ export default {
 
 
   }
-}
+    
+
+},
+    mounted(){
+        const store = usuarioStore();
+        store.setLink("http://localhost:3000");
+        this.link = "http://localhost:3000";
+    }
 }
 </script>

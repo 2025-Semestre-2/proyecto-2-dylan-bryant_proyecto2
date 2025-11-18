@@ -110,7 +110,8 @@ export default {
       filtroMetodoEntrega: '',
       clientesPorPagina: 10,
       paginaActual: 1,
-      sucursal: ''
+      sucursal: '',
+      link: ''
     }
   },
   computed: {
@@ -125,7 +126,7 @@ export default {
   },
   methods: {
     obtenerTodosLosClientes() {
-      const url = `http://localhost:3000/customers/getAllCustomers?sucursal=${encodeURIComponent(this.sucursal)}`;
+      const url = `${this.link}/customers/getAllCustomers?sucursal=${encodeURIComponent(this.sucursal)}`;
       fetch(url)
         .then(res => res.json())
         .then(result => {
@@ -134,7 +135,7 @@ export default {
     },
 
     obtenerLasCategorias(){
-      fetch('http://localhost:3000/customers/getAllCategories')
+      fetch(`${this.link}/customers/getAllCategories`)
         .then(res => res.json())
         .then(result => {
           this.listaCategorias = result
@@ -142,7 +143,7 @@ export default {
     },
 
     obtenerTodosLosTiposDeEntrega(){
-      fetch('http://localhost:3000/customers/getAllDeliveryMethods')
+      fetch(`${this.link}/customers/getAllDeliveryMethods`)
         .then(res => res.json())
         .then(result => {
           this.listaMetodosDeEntrega = result
@@ -150,7 +151,7 @@ export default {
     },
 
     buscarClientes(){
-      const url = `http://localhost:3000/customers/searchCustomers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+      const url = `${this.link}/customers/searchCustomers?name=${encodeURIComponent(this.filtroNombre)}&category=${encodeURIComponent(this.filtroCategoria)}&deliveryMethod=${encodeURIComponent(this.filtroMetodoEntrega)}&sucursal=${encodeURIComponent(this.sucursal)}`;
 
       fetch(url)
         .then(res => {
@@ -192,6 +193,7 @@ export default {
     const store = usuarioStore();
     console.log("Sucursal: " + store.sucursal)
     this.sucursal = store.sucursal;
+    this.link = store.link;
     this.obtenerTodosLosClientes();
     this.obtenerLasCategorias();
     this.obtenerTodosLosTiposDeEntrega();

@@ -11,6 +11,16 @@
         <p class="label">Puede ingresar texto que pertenezca al provedor o la categoría</p>
         </fieldset>
 
+        <fieldset class="fieldset">
+        <legend class="fieldset-legend">Sucursal</legend>
+        <select class="select" v-model="sucursalSeleccionada" @change="cambioEnLosFiltros">
+                    <option value="Limon" selected>Limón</option>
+                    <option value="SanJose">San José</option>
+                    <option value="Corporativo">Consolidado</option>
+        </select>
+        <p class="label">Puede consultar una única sucursal o un consolidado entre todas.</p>
+        </fieldset>
+
     </div>
 
 
@@ -44,18 +54,21 @@
 </template>
 
 <script>
+  import { usuarioStore } from '../stores/usuario.js'
     export default{
         data(){
             return{
                 filtro: '',
-                lista: []
+                lista: [],
+                sucursalSeleccionada: 'Limon',
+                link: ''
             }
             
         },
         methods:{
             buscar(){
-            const url = `http://localhost:3000/stats/primeraEstadistica?proveedor=${encodeURIComponent(this.filtro)}`;
-
+            const url = `${this.link}/stats/primeraEstadistica?proveedor=${encodeURIComponent(this.filtro)}&sucursal=${encodeURIComponent(this.sucursalSeleccionada)}`;
+              console.log("Url: " + url)
             fetch(url)
                 .then(res => {
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
@@ -63,6 +76,7 @@
                 })
                 .then(result => {
                 this.lista = result; 
+                console.log("Resultado: " + result)
                 })
                 .catch(err => {
                 console.error('Error al buscar:', err);
@@ -74,6 +88,8 @@
             }
         },
         mounted(){
+            const store = usuarioStore();
+            this.link = store.link;
             this.buscar();
 
         }

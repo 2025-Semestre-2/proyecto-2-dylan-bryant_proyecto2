@@ -4,10 +4,10 @@
 # Objetivos
 SQL Sever
     
-    Replicación: No, se intentó de multiples formas y se había logrado pero al intentar hacer una modificación se cayó la replicación y no la pudimos volver a poner a funcionar. La replicación estaba con las bases de datos entre distintos servidores
+    Replicación: Se pudo realizar replicación para la tabla correspondiente.
     Fragmentación: Sí, se eliminaron los datos sensibles del cliente de las sucursales y se dejaron unicamente en el corporativo. En el corporativo se dejó solo lo relacionado a los clientes y sus tablas que eran llaves foráneas de clientes
     Vistas materializadas: Se tomaron vistas del proyecto 1 y algunas consultas tuvieron que modificarse para los clientes para utilizar linked server y que se tomaran los datos de el corporativo y se mezclaran con los de la sucursal
-    Concurrencia: No se manejó porque estaba con la replicación
+    Concurrencia: No se probó
     Encriptación: Sí, se utilizó el SHA256
 
 Sistema WEB

@@ -28,7 +28,8 @@ import { usuarioStore } from '../stores/usuario.js'
         data(){
             return{
                 item: null,
-                sucursal: ''
+                sucursal: '',
+                link: ''
             }
         },
 
@@ -37,7 +38,7 @@ import { usuarioStore } from '../stores/usuario.js'
             if (!nombre) return;
 
             try {
-                const url = `http://localhost:3000/items/getSpecificItem?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
+                const url = `${this.link}/items/getSpecificItem?name=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(this.sucursal)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Error en la respuesta del servidor');
                 const result = await res.json();
@@ -63,6 +64,7 @@ import { usuarioStore } from '../stores/usuario.js'
             const store = usuarioStore();
             console.log("Sucursal: " + store.sucursal)
             this.sucursal = store.sucursal;
+            this.link = store.link;
             const item = localStorage.getItem('itemSeleccionado') || '';
             console.log("Item: ", item)
             this.buscarItem(item);
