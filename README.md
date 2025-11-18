@@ -11,7 +11,7 @@ SQL Sever
     Encriptación: Sí, se utilizó el SHA256
 
 Sistema WEB
-    Funcionalidad: Se logró adaptar la funcionalidad del proyecto 1 a las bases distribuidas. No se lograron poner las estadísticas ni el CRUD para los productos a pesar de que si se cuentan con procedimientos almacenados para esto. Se agregó el inicio de sesión con el selector para la sucursal
+    Funcionalidad: Se logró adaptar la funcionalidad del proyecto 1 a las bases distribuidas. Se logró realizar las estadisticas por funcionalidad y consolidado.
     Diseño UI y funcionalidad: Se mantuvo la del primer proyecto
-    API: Para todo menos las estadísticas se logró adaptar el api del proyecto 1 para que tomara en cuenta la sucursal hasta la que se dirige la petición para manejar este factor.
+    API: Se logró adaptar el api del proyecto 1 para que tomara en cuenta la sucursal hasta la que se dirige la petición para manejar este factor.
 
